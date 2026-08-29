@@ -1,0 +1,30 @@
+include .env
+MIGRATIONS_PATH = ./cmd/migrate/migrations
+DB_ADDR = postgres://admin:adminpassword@localhost/social?sslmode=disable
+
+.PHONY: migrate-up migrate-down run build migrate-create
+
+# Run the application with live-reloading
+run:
+	air
+
+# Build the Go application
+build:
+	go build -o ./bin/main ./cmd/api
+
+# Run database migrations up
+migrate-up:
+	migrate -path=$(MIGRATIONS_PATH) -database="$(DB_ADDR)" up
+
+# Rollback database migrations
+migrate-down:
+	migrate -path=$(MIGRATIONS_PATH) -database="$(DB_ADDR)" down
+
+# Create a new database migration
+migrate-create:
+	@echo "---Creating migration files---"
+	migrate create -seq -ext sql -dir $(MIGRATIONS_PATH) $(filter-out $@,$(MAKECMDGOALS))
+
+# Catch-all target to allow passing arguments to migrate-create
+%:
+	@:
