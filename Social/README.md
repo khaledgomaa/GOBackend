@@ -45,3 +45,12 @@ The project includes a `Makefile` with commands to simplify common tasks:
 - `make migrate-up`: Applies all pending database migrations.
 - `make migrate-down`: Rolls back the last applied database migrations.
 - `make migrate-create name=<migration_name>`: Scaffolds a new migration file.
+
+## Testing the API
+
+The project includes an `api.http` file for quickly testing endpoints directly from VS Code.
+
+**To use it:**
+1. Install the [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client) extension in VS Code.
+2. Open the `api.http` file in the root directory.
+3. Click the **Send Request** text button that appears above each endpoint to execute it.

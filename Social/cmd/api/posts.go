@@ -6,6 +6,7 @@ import (
 	"github.com/gobackend/social/internal/store"
 )
 
+// DTO to limit specific properties by the user
 type CreatePostPayload struct {
 	Title   string   `json:"title"`
 	Content string   `json:"content"`
@@ -21,6 +22,7 @@ func (app *application) createPostHandler(w http.ResponseWriter, r *http.Request
 
 	userId := 1
 
+	// Created as reference type because app.store.Posts.Create will mutate it
 	post := &store.Post{
 		Title:   payload.Title,
 		Content: payload.Content,
