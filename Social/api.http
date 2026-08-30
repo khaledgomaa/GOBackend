@@ -19,5 +19,16 @@ Content-Type: application/json
 }
 
 ### Get a post by id
-GET {{baseUrl}}/posts/1
+GET {{baseUrl}}/posts/3
 Accept: application/json
+
+###
+
+### Add a comment to a post
+# Endpoint to add a comment to a specific post
+POST {{baseUrl}}/posts/3/comments
+Content-Type: application/json
+
+{
+    "content": "This is a great post!"
+}

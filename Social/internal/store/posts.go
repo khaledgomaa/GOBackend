@@ -16,8 +16,9 @@ type Post struct {
 	Title     string   `json:"title"`
 	UserID    int64    `json:"user_id"`
 	Tags      []string `json:"tags"`
-	CreatedAt string   `json:"created_at"`
-	UpdatedAt string   `json:"updated_at"`
+	CreatedAt string    `json:"created_at"`
+	UpdatedAt string    `json:"updated_at"`
+	Comments  []Comment `json:"comments"`
 }
 
 // PostStore implements the data access logic for Posts.
@@ -78,6 +79,13 @@ func (s *PostStore) GetByID(ctx context.Context, postID int64) (*Post, error) {
 			return nil, err
 		}
 	}
+
+	comments, err := NewCommentStore(s.db).GetByPostID(ctx, postID)
+	if err != nil {
+		return nil, err
+	}
+
+	post.Comments = comments
 
 	return &post, nil
 }
