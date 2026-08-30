@@ -17,3 +17,7 @@ Content-Type: application/json
     "content": "This is the content of my first post. It's working great!",
     "tags": ["News", "Sports"]
 }
+
+### Get a post by id
+GET {{baseUrl}}/posts/1
+Accept: application/json

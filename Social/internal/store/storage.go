@@ -3,6 +3,11 @@ package store
 import (
 	"context"
 	"database/sql"
+	"errors"
+)
+
+var (
+	ErrNotFound = errors.New("Resource not found")
 )
 
 // Storage acts as a centralized data access layer.
@@ -12,6 +17,7 @@ type Storage struct {
 	// Similar to defining IPostRepository and IUserRepository in .NET.
 	Posts interface {
 		Create(context.Context, *Post) error
+		GetByID(context.Context, int64) (*Post, error)
 	}
 	Users interface {
 		Create(context.Context, *User) error
