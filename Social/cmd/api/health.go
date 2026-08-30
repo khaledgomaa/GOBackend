@@ -1,3 +1,4 @@
+// This file equivalent to Controller or fast api in .NET
 package main
 
 import "net/http"

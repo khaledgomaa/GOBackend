@@ -1,3 +1,5 @@
+// This file to automate environment setup and provide some
+// pre-defined tools to make the app ready to run on other machines
 include .env
 MIGRATIONS_PATH = ./cmd/migrate/migrations
 DB_ADDR = postgres://admin:adminpassword@localhost/social?sslmode=disable

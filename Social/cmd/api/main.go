@@ -1,3 +1,4 @@
+// This file equivalent to program.cs in .NET
 package main
 
 import (
@@ -10,11 +11,12 @@ import (
 )
 
 func main() {
-	err := godotenv.Load()
+	err := godotenv.Load() // To load environment variables defined insided .env
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
 
+	// To initialize required configuration
 	cfg := config{
 		addr: env.GetString("ADDR", ":8080"),
 		db: dbConfig{
@@ -30,6 +32,7 @@ func main() {
 		cfg.db.maxIdleConns,
 		cfg.db.maxIdleTime)
 
+	// Encapsulates required dependencies with respecting DI
 	app := &application{
 		config: cfg,
 		store:  store.NewStorage(db),
@@ -39,7 +42,7 @@ func main() {
 
 	log.Println("database connection pool established")
 
-	mux := app.mount()
+	mux := app.mount() // Middleware
 
 	log.Fatal(app.run(mux))
 }

@@ -1,3 +1,4 @@
+// This is equivalent to Configuration in .NET
 package env
 
 import (
