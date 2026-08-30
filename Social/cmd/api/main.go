@@ -12,7 +12,7 @@ import (
 
 func main() {
 	// Loads .env file (Similar to reading appsettings.json or Environment Variables in .NET)
-	err := godotenv.Load() 
+	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
@@ -26,6 +26,7 @@ func main() {
 			maxIdleConns: env.GetInt("DB_MAX_IDLE_CONNS", 30),
 			maxIdleTime:  env.GetString("DB_MAX_IDLE_TIME", "15m"),
 		},
+		env: env.GetString("ENV", "DEVELOPMENT"),
 	}
 
 	db, err := db.New(cfg.db.conn,

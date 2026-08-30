@@ -1,0 +1,19 @@
+@baseUrl = http://localhost:4040/v1
+
+### Health Check
+# Endpoint to verify the API is running
+GET {{baseUrl}}/health
+Accept: application/json
+
+###
+
+### Create a Post
+# Endpoint to create a new post
+POST {{baseUrl}}/posts
+Content-Type: application/json
+
+{
+    "title": "My First Post",
+    "content": "This is the content of my first post. It's working great!",
+    "tags": ["News", "Sports"]
+}

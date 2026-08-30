@@ -30,3 +30,4 @@ go.work.sum
 # Editor/IDE
 # .idea/
 # .vscode/
+Social/bin/build-errors.log
