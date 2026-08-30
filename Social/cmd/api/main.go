@@ -1,4 +1,4 @@
-// This file equivalent to program.cs in .NET
+// Equivalent to Program.cs in .NET (Entry point, configuration, and DI setup)
 package main
 
 import (
@@ -11,12 +11,13 @@ import (
 )
 
 func main() {
-	err := godotenv.Load() // To load environment variables defined insided .env
+	// Loads .env file (Similar to reading appsettings.json or Environment Variables in .NET)
+	err := godotenv.Load() 
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
 
-	// To initialize required configuration
+	// Equivalent to IOptions<T> or binding Configuration sections in .NET
 	cfg := config{
 		addr: env.GetString("ADDR", ":8080"),
 		db: dbConfig{
@@ -32,7 +33,8 @@ func main() {
 		cfg.db.maxIdleConns,
 		cfg.db.maxIdleTime)
 
-	// Encapsulates required dependencies with respecting DI
+	// Go doesn't have a built-in IoC container like IServiceCollection.
+	// Dependencies are explicitly passed via structs (Constructor Injection).
 	app := &application{
 		config: cfg,
 		store:  store.NewStorage(db),

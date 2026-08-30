@@ -1,4 +1,5 @@
-// This is equivalent to Configuration in .NET
+// Equivalent to IConfiguration in .NET
+// Provides helpers to read environment variables with fallbacks.
 package env
 
 import (

@@ -5,6 +5,8 @@ import (
 	"database/sql"
 )
 
+// User represents a database entity.
+// The `json:"-"` tag ensures the field is ignored during JSON serialization (like [JsonIgnore] in .NET).
 type User struct {
 	ID        int64  `json:"id"`
 	Username  string `json:"username"`
@@ -13,6 +15,8 @@ type User struct {
 	CreatedAt string `json:"created_at"`
 }
 
+// UserStore implements the data access logic for Users.
+// Equivalent to a Repository class in .NET.
 type UserStore struct {
 	db *sql.DB
 }

@@ -6,7 +6,11 @@ import (
 	"time"
 )
 
+// New creates and configures a database connection pool.
+// Equivalent to services.AddDbContextPool<T>() in .NET.
 func New(conn string, maxOpenConns, maxIdleConns int, maxIdleTime string) (*sql.DB, error) {
+	// sql.Open doesn't actually connect, it just validates arguments.
+	// Ping() is used to verify the connection, similar to context.Database.CanConnect() in EF Core.
 	db, err := sql.Open("postgres", conn)
 	if err != nil {
 		return nil, err

@@ -5,7 +5,11 @@ import (
 	"database/sql"
 )
 
-type Storage struct { // equivalent to dbcontext in EF core
+// Storage acts as a centralized data access layer.
+// Equivalent to DbContext in EF Core or a Unit of Work / Repository pattern wrapper in .NET.
+type Storage struct {
+	// Interfaces are defined where they are used in Go.
+	// Similar to defining IPostRepository and IUserRepository in .NET.
 	Posts interface {
 		Create(context.Context, *Post) error
 	}

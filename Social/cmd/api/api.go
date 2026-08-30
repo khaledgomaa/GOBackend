@@ -10,6 +10,8 @@ import (
 	"github.com/gobackend/social/internal/store"
 )
 
+// application struct acts as a container for dependencies.
+// Methods on this struct act as HTTP handlers (similar to Controller actions).
 type application struct {
 	config config
 	store  store.Storage
@@ -27,6 +29,8 @@ type dbConfig struct {
 	maxIdleTime  string
 }
 
+// mount() configures the HTTP pipeline and routing.
+// Equivalent to app.Use...() and app.MapControllers() in .NET Program.cs
 func (app *application) mount() http.Handler {
 	r := chi.NewRouter()
 

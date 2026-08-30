@@ -7,6 +7,8 @@ import (
 	"github.com/lib/pq"
 )
 
+// Post represents a database entity and a JSON response object.
+// Struct tags (`json:"id"`) are equivalent to attributes like [JsonPropertyName("id")] in .NET.
 type Post struct {
 	ID        int64    `json:"id"`
 	Content   string   `json:"content"`
@@ -17,14 +19,18 @@ type Post struct {
 	UpdatedAt string   `json:"updated_at"`
 }
 
+// PostStore implements the data access logic for Posts.
+// Equivalent to a Repository class in .NET (e.g., PostRepository : IPostRepository).
 type PostStore struct {
-	db *sql.DB
+	db *sql.DB // Equivalent to injecting DbContext or IDbConnection
 }
 
 func NewPostsStore(db *sql.DB) *PostStore {
 	return &PostStore{db: db}
 }
 
+// Create executes an INSERT query.
+// Equivalent to dbContext.Posts.Add(post); dbContext.SaveChanges(); or using Dapper.
 func (s *PostStore) Create(ctx context.Context, post *Post) error {
 	query := `
 	INSERT into posts (content,title,user_id,tags)
