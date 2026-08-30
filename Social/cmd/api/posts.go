@@ -9,16 +9,24 @@ import (
 	"github.com/gobackend/social/internal/store"
 )
 
-// DTO to limit specific properties by the user
+// DTO to limit specific properties by the user.
+// The `validate` tags act like Data Annotations in .NET (e.g., [Required]).
 type CreatePostPayload struct {
-	Title   string   `json:"title"`
-	Content string   `json:"content"`
+	Title   string   `json:"title" validate:"required"`
+	Content string   `json:"content" validate:"required"`
 	Tags    []string `json:"tags"`
 }
 
 func (app *application) createPostHandler(w http.ResponseWriter, r *http.Request) {
 	var payload CreatePostPayload
 	if err := readJSON(w, r, &payload); err != nil {
+		app.badRequestError(w, r, err)
+		return
+	}
+
+	// Validate the struct against its tags.
+	// Equivalent to checking ModelState.IsValid in a .NET Controller or using a FluentValidation validator.
+	if err := validate.Struct(payload); err != nil {
 		app.badRequestError(w, r, err)
 		return
 	}

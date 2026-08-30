@@ -3,7 +3,20 @@ package main
 import (
 	"encoding/json"
 	"net/http"
+
+	"github.com/go-playground/validator/v10"
 )
+
+// Global validator instance.
+// Equivalent to injecting IValidator<T> from FluentValidation in .NET.
+var validate *validator.Validate
+
+// init() is called automatically by the Go runtime before main() executes.
+// It acts exactly like a Static Constructor in C# (e.g., static ClassName() { ... }).
+// We use it here to ensure our global validate instance is ready before the app starts.
+func init() {
+	validate = validator.New(validator.WithRequiredStructEnabled())
+}
 
 // writeJSON acts like returning Results.Json() or Ok(data) in a .NET Controller.
 // It sets the status code and serializes the object to the response stream.
