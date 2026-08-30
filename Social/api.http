@@ -32,3 +32,21 @@ Content-Type: application/json
 {
     "content": "This is a great post!"
 }
+
+###
+
+### Update a post
+# Endpoint to partially update a post
+PATCH {{baseUrl}}/posts/1
+Content-Type: application/json
+
+{
+    "title": "My Updated Title",
+    "content": "This content was updated via PATCH."
+}
+
+###
+
+### Delete a post
+# Endpoint to delete a specific post
+DELETE {{baseUrl}}/posts/1
