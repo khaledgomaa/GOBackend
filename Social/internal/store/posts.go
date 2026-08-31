@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"fmt"
 
 	"github.com/lib/pq"
 )
@@ -144,15 +145,40 @@ func (s *PostStore) Update(ctx context.Context, post *Post) error {
 }
 
 func (s *PostStore) GetUserPosts(ctx context.Context, userID int64, fq PaginatedFeedQuery) ([]Post, error) {
-	query := `
+	whereClause := "WHERE user_id = $1"
+	args := []any{userID}
+
+	if fq.Search != "" {
+		args = append(args, "%"+fq.Search+"%")
+		whereClause += fmt.Sprintf(" AND (title ILIKE $%d OR content ILIKE $%d)", len(args), len(args))
+	}
+
+	if len(fq.Tags) > 0 {
+		args = append(args, pq.Array(fq.Tags))
+		whereClause += fmt.Sprintf(" AND tags @> $%d", len(args))
+	}
+
+	if fq.Since != "" {
+		args = append(args, fq.Since)
+		whereClause += fmt.Sprintf(" AND created_at >= $%d", len(args))
+	}
+
+	if fq.Until != "" {
+		args = append(args, fq.Until)
+		whereClause += fmt.Sprintf(" AND created_at <= $%d", len(args))
+	}
+
+	args = append(args, fq.Limit, fq.Offset)
+
+	query := fmt.Sprintf(`
 	SELECT id, user_id, title, content, created_at, updated_at, tags
 	FROM posts
-	WHERE user_id = $1
-	ORDER BY created_at ` + fq.Sort + `
-	LIMIT $2 OFFSET $3
-	`
+	%s
+	ORDER BY created_at %s
+	LIMIT $%d OFFSET $%d
+	`, whereClause, fq.Sort, len(args)-1, len(args))
 
-	rows, err := s.db.QueryContext(ctx, query, userID, fq.Limit, fq.Offset)
+	rows, err := s.db.QueryContext(ctx, query, args...)
 	if err != nil {
 		return nil, err
 	}

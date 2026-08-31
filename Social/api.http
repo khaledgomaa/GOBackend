@@ -77,3 +77,10 @@ Accept: application/json
 ### Get posts by user ID
 GET {{baseUrl}}/users/1/posts?limit=2&offset=0&sort=desc
 Accept: application/json
+
+###
+
+### Search posts by user ID
+# Endpoint to search user posts using filters (search term, tags, date range)
+GET {{baseUrl}}/users/1/posts?limit=10&offset=0&sort=desc&search=content&tags=News,Sports&since=2023-01-01&until=2026-12-31
+Accept: application/json
