@@ -2,6 +2,7 @@
 package main
 
 import (
+	"github.com/gobackend/social/internal/auth"
 	"github.com/gobackend/social/internal/db"
 	"github.com/gobackend/social/internal/env"
 	"github.com/gobackend/social/internal/store"
@@ -34,6 +35,11 @@ func main() {
 			maxIdleTime:  env.GetString("DB_MAX_IDLE_TIME", "15m"),
 		},
 		env: env.GetString("ENV", "DEVELOPMENT"),
+		auth: authConfig{
+			secret: env.GetString("AUTH_SECRET", "supersecret"),
+			iss:    env.GetString("AUTH_ISS", "social-api"),
+			aud:    env.GetString("AUTH_AUD", "social-client"),
+		},
 	}
 
 	db, err := db.New(cfg.db.conn,
@@ -41,12 +47,15 @@ func main() {
 		cfg.db.maxIdleConns,
 		cfg.db.maxIdleTime)
 
+	authenticator := auth.NewAuthenticator(cfg.auth.secret, cfg.auth.iss, cfg.auth.aud)
+
 	// Go doesn't have a built-in IoC container like IServiceCollection.
 	// Dependencies are explicitly passed via structs (Constructor Injection).
 	app := &application{
-		config: cfg,
-		store:  store.NewStorage(db),
-		logger: logger,
+		config:        cfg,
+		store:         store.NewStorage(db),
+		logger:        logger,
+		authenticator: authenticator,
 	}
 
 	defer db.Close()

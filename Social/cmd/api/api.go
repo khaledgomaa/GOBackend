@@ -6,6 +6,7 @@ import (
 
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/chi/v5"
+	"github.com/gobackend/social/internal/auth"
 	"github.com/gobackend/social/internal/store"
 	httpSwagger "github.com/swaggo/http-swagger/v2"
 	_ "github.com/gobackend/social/docs"
@@ -15,15 +16,23 @@ import (
 // application struct acts as a container for dependencies.
 // Methods on this struct act as HTTP handlers (similar to Controller actions).
 type application struct {
-	config config
-	store  store.Storage
-	logger *zap.Logger
+	config        config
+	store         store.Storage
+	logger        *zap.Logger
+	authenticator *auth.Authenticator
 }
 
 type config struct {
 	addr string
 	db   dbConfig
 	env  string
+	auth authConfig
+}
+
+type authConfig struct {
+	secret string
+	iss    string
+	aud    string
 }
 
 type dbConfig struct {
@@ -47,24 +56,32 @@ func (app *application) mount() http.Handler {
 
 		r.Get("/swagger/*", httpSwagger.Handler())
 
-		r.Route("/posts", func(r chi.Router) {
-			r.Post("/", app.createPostHandler)
+		r.Post("/auth/token", app.generateTokenHandler)
 
-			r.Route("/{postID}", func(r chi.Router) {
-				r.Get("/", app.getPostHandler)
-				r.Delete("/", app.deletePostHandler)
-				r.Patch("/", app.updatePostHandler)
-				r.Post("/comments", app.createCommentHandler)
+		r.Group(func(r chi.Router) {
+			r.Use(app.AuthMiddleware)
+
+			r.Route("/posts", func(r chi.Router) {
+				r.Post("/", app.createPostHandler)
+
+				r.Route("/{postID}", func(r chi.Router) {
+					r.Get("/", app.getPostHandler)
+					r.Delete("/", app.deletePostHandler)
+					r.Patch("/", app.updatePostHandler)
+					r.Post("/comments", app.createCommentHandler)
+				})
+			})
+
+			r.Route("/users", func(r chi.Router) {
+				r.Route("/{userID}", func(r chi.Router) {
+					r.Get("/", app.getUserHandler)
+					r.Get("/posts", app.getUserPostsHandler)
+				})
 			})
 		})
 
-		r.Route("/users", func(r chi.Router) {
-			r.Route("/{userID}", func(r chi.Router) {
-				r.Get("/", app.getUserHandler)
-				r.Get("/posts", app.getUserPostsHandler)
-			})
-			r.Post("/", app.createUserHandler)
-		})
+		// Public endpoint to register a user
+		r.Post("/users", app.createUserHandler)
 	})
 
 	return r

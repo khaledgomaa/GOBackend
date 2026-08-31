@@ -20,3 +20,8 @@ func (app *application) notFoundResponse(w http.ResponseWriter, r *http.Request,
 	app.logger.Warn("not found error", zap.String("method", r.Method), zap.String("path", r.URL.Path), zap.Error(err))
 	writeJSONError(w, http.StatusNotFound, "not found")
 }
+
+func (app *application) unauthorizedErrorResponse(w http.ResponseWriter, r *http.Request, err error) {
+	app.logger.Warn("unauthorized error", zap.String("method", r.Method), zap.String("path", r.URL.Path), zap.Error(err))
+	writeJSONError(w, http.StatusUnauthorized, "unauthorized")
+}
