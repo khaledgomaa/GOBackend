@@ -2,12 +2,11 @@
 package main
 
 import (
-	"log"
-
 	"github.com/gobackend/social/internal/db"
 	"github.com/gobackend/social/internal/env"
 	"github.com/gobackend/social/internal/store"
 	"github.com/joho/godotenv"
+	"go.uber.org/zap"
 )
 
 //	@title			Social API
@@ -16,10 +15,13 @@ import (
 //	@host			localhost:4040
 //	@BasePath		/v1
 func main() {
+	logger := zap.Must(zap.NewProduction())
+	defer logger.Sync()
+
 	// Loads .env file (Similar to reading appsettings.json or Environment Variables in .NET)
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		logger.Fatal("Error loading .env file", zap.Error(err))
 	}
 
 	// Equivalent to IOptions<T> or binding Configuration sections in .NET
@@ -44,13 +46,14 @@ func main() {
 	app := &application{
 		config: cfg,
 		store:  store.NewStorage(db),
+		logger: logger,
 	}
 
 	defer db.Close()
 
-	log.Println("database connection pool established")
+	logger.Info("database connection pool established")
 
 	mux := app.mount() // Middleware
 
-	log.Fatal(app.run(mux))
+	logger.Fatal("Server stopped", zap.Error(app.run(mux)))
 }

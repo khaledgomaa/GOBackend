@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"net/http"
 	"time"
 
@@ -10,6 +9,7 @@ import (
 	"github.com/gobackend/social/internal/store"
 	httpSwagger "github.com/swaggo/http-swagger/v2"
 	_ "github.com/gobackend/social/docs"
+	"go.uber.org/zap"
 )
 
 // application struct acts as a container for dependencies.
@@ -17,6 +17,7 @@ import (
 type application struct {
 	config config
 	store  store.Storage
+	logger *zap.Logger
 }
 
 type config struct {
@@ -78,7 +79,7 @@ func (app *application) run(mux http.Handler) error {
 		IdleTimeout:  time.Minute, // For IO
 	}
 
-	log.Printf("Server has started at %s", app.config.addr)
+	app.logger.Info("Server has started", zap.String("addr", app.config.addr))
 
 	return srv.ListenAndServe()
 }
