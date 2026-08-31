@@ -143,14 +143,16 @@ func (s *PostStore) Update(ctx context.Context, post *Post) error {
 	return nil
 }
 
-func (s *PostStore) GetUserPosts(ctx context.Context, userID int64) ([]Post, error) {
+func (s *PostStore) GetUserPosts(ctx context.Context, userID int64, fq PaginatedFeedQuery) ([]Post, error) {
 	query := `
 	SELECT id, user_id, title, content, created_at, updated_at, tags
 	FROM posts
 	WHERE user_id = $1
+	ORDER BY created_at ` + fq.Sort + `
+	LIMIT $2 OFFSET $3
 	`
 
-	rows, err := s.db.QueryContext(ctx, query, userID)
+	rows, err := s.db.QueryContext(ctx, query, userID, fq.Limit, fq.Offset)
 	if err != nil {
 		return nil, err
 	}

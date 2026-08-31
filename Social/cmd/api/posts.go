@@ -181,8 +181,25 @@ func (app *application) getUserPostsHandler(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
+	fq := store.PaginatedFeedQuery{
+		Limit:  10,
+		Offset: 0,
+		Sort:   "desc",
+	}
+
+	fq, err = fq.Parse(r)
+	if err != nil {
+		app.badRequestError(w, r, err)
+		return
+	}
+
+	if err := validate.Struct(fq); err != nil {
+		app.badRequestError(w, r, err)
+		return
+	}
+
 	ctx := r.Context()
-	posts, err := app.store.Posts.GetUserPosts(ctx, userID)
+	posts, err := app.store.Posts.GetUserPosts(ctx, userID, fq)
 	if err != nil {
 		app.internalServerError(w, r, err)
 		return
