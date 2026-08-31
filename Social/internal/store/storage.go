@@ -4,10 +4,12 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"time"
 )
 
 var (
-	ErrNotFound = errors.New("Resource not found")
+	ErrNotFound          = errors.New("Resource not found")
+	QueryTimeoutDuration = time.Second * 5
 )
 
 // Storage acts as a centralized data access layer.
@@ -23,6 +25,7 @@ type Storage struct {
 	}
 	Users interface {
 		Create(context.Context, *User) error
+		GetByID(context.Context, int64) (*User, error)
 	}
 	Comments interface {
 		Create(context.Context, *Comment) error

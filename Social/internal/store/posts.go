@@ -11,11 +11,11 @@ import (
 // Post represents a database entity and a JSON response object.
 // Struct tags (`json:"id"`) are equivalent to attributes like [JsonPropertyName("id")] in .NET.
 type Post struct {
-	ID        int64    `json:"id"`
-	Content   string   `json:"content"`
-	Title     string   `json:"title"`
-	UserID    int64    `json:"user_id"`
-	Tags      []string `json:"tags"`
+	ID        int64     `json:"id"`
+	Content   string    `json:"content"`
+	Title     string    `json:"title"`
+	UserID    int64     `json:"user_id"`
+	Tags      []string  `json:"tags"`
 	CreatedAt string    `json:"created_at"`
 	UpdatedAt string    `json:"updated_at"`
 	Comments  []Comment `json:"comments"`
@@ -38,6 +38,10 @@ func (s *PostStore) Create(ctx context.Context, post *Post) error {
 	INSERT into posts (content,title,user_id,tags)
 	VALUES ($1, $2, $3, $4) RETURNING id, created_at, updated_at
 	`
+	// Create a new context that expires in 5 seconds
+	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
+	defer cancel() // Always defer cancel to prevent memory leaks
+
 	err := s.db.QueryRowContext(ctx,
 		query,
 		post.Content,

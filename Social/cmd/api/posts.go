@@ -110,6 +110,7 @@ type UpdatePostPayload struct {
 	Tags    []string `json:"tags"`
 }
 
+// Hanlding concurrent updates is out of scope for now
 func (app *application) updatePostHandler(w http.ResponseWriter, r *http.Request) {
 	idParam := chi.URLParam(r, "postID")
 	postID, err := strconv.ParseInt(idParam, 10, 64)

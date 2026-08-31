@@ -50,3 +50,23 @@ Content-Type: application/json
 ### Delete a post
 # Endpoint to delete a specific post
 DELETE {{baseUrl}}/posts/1
+
+###
+
+### Create a User
+# Endpoint to create a new user
+POST {{baseUrl}}/users
+Content-Type: application/json
+
+{
+    "username": "testuser",
+    "email": "test@example.com",
+    "password": "supersecretpassword"
+}
+
+###
+
+### Get a user by ID
+# Endpoint to fetch a specific user
+GET {{baseUrl}}/users/1
+Accept: application/json
