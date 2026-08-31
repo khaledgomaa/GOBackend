@@ -1,15 +1,19 @@
 package main
 
 import (
+	"context"
 	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
 	"time"
 
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/chi/v5"
+	_ "github.com/gobackend/social/docs"
 	"github.com/gobackend/social/internal/auth"
 	"github.com/gobackend/social/internal/store"
 	httpSwagger "github.com/swaggo/http-swagger/v2"
-	_ "github.com/gobackend/social/docs"
 	"go.uber.org/zap"
 )
 
@@ -97,6 +101,22 @@ func (app *application) run(mux http.Handler) error {
 	}
 
 	app.logger.Info("Server has started", zap.String("addr", app.config.addr))
+
+	shutdown := make(chan error)
+
+	go func() {
+		quit := make(chan os.Signal, 1)
+
+		signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+		s := <-quit
+
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+
+		app.logger.Info("signal caught", zap.String("signal", s.String()))
+
+		shutdown <- srv.Shutdown(ctx)
+	}()
 
 	return srv.ListenAndServe()
 }
