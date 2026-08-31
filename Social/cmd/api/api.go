@@ -8,6 +8,8 @@ import (
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/chi/v5"
 	"github.com/gobackend/social/internal/store"
+	httpSwagger "github.com/swaggo/http-swagger/v2"
+	_ "github.com/gobackend/social/docs"
 )
 
 // application struct acts as a container for dependencies.
@@ -41,6 +43,8 @@ func (app *application) mount() http.Handler {
 	r.Use(middleware.Logger)
 	r.Route("/v1", func(r chi.Router) {
 		r.Get("/health", app.healthCheckHandler)
+
+		r.Get("/swagger/*", httpSwagger.Handler())
 
 		r.Route("/posts", func(r chi.Router) {
 			r.Post("/", app.createPostHandler)

@@ -10,6 +10,11 @@ import (
 	"github.com/joho/godotenv"
 )
 
+//	@title			Social API
+//	@description	A social network API.
+//	@version		1.0
+//	@host			localhost:4040
+//	@BasePath		/v1
 func main() {
 	// Loads .env file (Similar to reading appsettings.json or Environment Variables in .NET)
 	err := godotenv.Load()

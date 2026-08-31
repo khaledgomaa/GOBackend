@@ -18,6 +18,15 @@ type CreatePostPayload struct {
 	UserID  int64    `json:"user_id" validate:"required"`
 }
 
+// createPostHandler godoc
+//	@Summary		Create a post
+//	@Description	Create a new post
+//	@Tags			posts
+//	@Accept			json
+//	@Produce		json
+//	@Param			payload	body		CreatePostPayload	true	"Post payload"
+//	@Success		201		{object}	store.Post
+//	@Router			/posts [post]
 func (app *application) createPostHandler(w http.ResponseWriter, r *http.Request) {
 	var payload CreatePostPayload
 	if err := readJSON(w, r, &payload); err != nil {
@@ -65,6 +74,15 @@ func (app *application) createPostHandler(w http.ResponseWriter, r *http.Request
 	}
 }
 
+// getPostHandler godoc
+//	@Summary		Get a post
+//	@Description	Get a post by ID
+//	@Tags			posts
+//	@Accept			json
+//	@Produce		json
+//	@Param			postID	path		int	true	"Post ID"
+//	@Success		200		{object}	store.Post
+//	@Router			/posts/{postID} [get]
 func (app *application) getPostHandler(w http.ResponseWriter, r *http.Request) {
 	idParam := chi.URLParam(r, "postID")
 	postID, err := strconv.ParseInt(idParam, 10, 64)
@@ -92,6 +110,15 @@ func (app *application) getPostHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// deletePostHandler godoc
+//	@Summary		Delete a post
+//	@Description	Delete a post by ID
+//	@Tags			posts
+//	@Accept			json
+//	@Produce		json
+//	@Param			postID	path		int	true	"Post ID"
+//	@Success		204		"No Content"
+//	@Router			/posts/{postID} [delete]
 func (app *application) deletePostHandler(w http.ResponseWriter, r *http.Request) {
 	idParam := chi.URLParam(r, "postID")
 	postID, err := strconv.ParseInt(idParam, 10, 64)
@@ -122,6 +149,16 @@ type UpdatePostPayload struct {
 }
 
 // Hanlding concurrent updates is out of scope for now
+// updatePostHandler godoc
+//	@Summary		Update a post
+//	@Description	Partially update a post by ID
+//	@Tags			posts
+//	@Accept			json
+//	@Produce		json
+//	@Param			postID	path		int					true	"Post ID"
+//	@Param			payload	body		UpdatePostPayload	true	"Post update payload"
+//	@Success		200		{object}	store.Post
+//	@Router			/posts/{postID} [patch]
 func (app *application) updatePostHandler(w http.ResponseWriter, r *http.Request) {
 	idParam := chi.URLParam(r, "postID")
 	postID, err := strconv.ParseInt(idParam, 10, 64)
@@ -173,6 +210,22 @@ func (app *application) updatePostHandler(w http.ResponseWriter, r *http.Request
 	}
 }
 
+// getUserPostsHandler godoc
+//	@Summary		Get user posts
+//	@Description	Get a paginated list of a user's posts
+//	@Tags			users
+//	@Accept			json
+//	@Produce		json
+//	@Param			userID	path		int		true	"User ID"
+//	@Param			limit	query		int		false	"Limit"
+//	@Param			offset	query		int		false	"Offset"
+//	@Param			sort	query		string	false	"Sort"
+//	@Param			tags	query		string	false	"Tags"
+//	@Param			search	query		string	false	"Search"
+//	@Param			since	query		string	false	"Since"
+//	@Param			until	query		string	false	"Until"
+//	@Success		200		{array}		store.Post
+//	@Router			/users/{userID}/posts [get]
 func (app *application) getUserPostsHandler(w http.ResponseWriter, r *http.Request) {
 	idParam := chi.URLParam(r, "userID")
 	userID, err := strconv.ParseInt(idParam, 10, 64)

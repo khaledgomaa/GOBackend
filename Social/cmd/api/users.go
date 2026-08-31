@@ -9,6 +9,15 @@ import (
 	"github.com/gobackend/social/internal/store"
 )
 
+// getUserHandler godoc
+//	@Summary		Get a user
+//	@Description	Get a user by ID
+//	@Tags			users
+//	@Accept			json
+//	@Produce		json
+//	@Param			userID	path		int	true	"User ID"
+//	@Success		200		{object}	store.User
+//	@Router			/users/{userID} [get]
 func (app *application) getUserHandler(w http.ResponseWriter, r *http.Request) {
 	idParam := chi.URLParam(r, "userID")
 	userID, err := strconv.ParseInt(idParam, 10, 64)
@@ -40,6 +49,15 @@ type CreateUserPayload struct {
 	Password string `json:"password" validate:"required,min=3,max=72"`
 }
 
+// createUserHandler godoc
+//	@Summary		Create a user
+//	@Description	Create a new user
+//	@Tags			users
+//	@Accept			json
+//	@Produce		json
+//	@Param			payload	body		CreateUserPayload	true	"User payload"
+//	@Success		201		{object}	store.User
+//	@Router			/users [post]
 func (app *application) createUserHandler(w http.ResponseWriter, r *http.Request) {
 	var payload CreateUserPayload
 	if err := readJSON(w, r, &payload); err != nil {

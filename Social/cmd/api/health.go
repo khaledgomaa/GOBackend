@@ -8,6 +8,14 @@ import (
 
 // The (app *application) receiver makes this method part of the application struct,
 // allowing it to access dependencies like a Controller instance method.
+// healthCheckHandler godoc
+//	@Summary		Health Check
+//	@Description	Endpoint to verify the API is running
+//	@Tags			health
+//	@Accept			json
+//	@Produce		json
+//	@Success		200	{object}	map[string]string
+//	@Router			/health [get]
 func (app *application) healthCheckHandler(w http.ResponseWriter, r *http.Request) {
 	data := map[string]string{
 		"status": "ok",

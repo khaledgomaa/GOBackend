@@ -12,6 +12,16 @@ type CreateCommentPayload struct {
 	Content string `json:"content" validate:"required"`
 }
 
+// createCommentHandler godoc
+//	@Summary		Create a comment
+//	@Description	Add a comment to a specific post
+//	@Tags			posts
+//	@Accept			json
+//	@Produce		json
+//	@Param			postID	path		int						true	"Post ID"
+//	@Param			payload	body		CreateCommentPayload	true	"Comment payload"
+//	@Success		201		{object}	store.Comment
+//	@Router			/posts/{postID}/comments [post]
 func (app *application) createCommentHandler(w http.ResponseWriter, r *http.Request) {
 	idParam := chi.URLParam(r, "postID")
 	postID, err := strconv.ParseInt(idParam, 10, 64)

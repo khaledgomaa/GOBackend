@@ -4,7 +4,7 @@ include .env
 MIGRATIONS_PATH = ./cmd/migrate/migrations
 DB_ADDR = postgres://admin:adminpassword@localhost/social?sslmode=disable
 
-.PHONY: migrate-up migrate-down run build migrate-create
+.PHONY: migrate-up migrate-down run build migrate-create gen-docs
 
 # Run the application with live-reloading
 run:
@@ -13,6 +13,10 @@ run:
 # Build the Go application
 build:
 	go build -o ./bin/main ./cmd/api
+
+# Generate Swagger documentation
+gen-docs:
+	swag init -g cmd/api/main.go -d .
 
 # Run database migrations up
 migrate-up:
